@@ -1,16 +1,20 @@
 package main
 
 import (
-	"net/http"
-
+	"github.com/aloksingh3112/BookMyMovie/db"
+	"github.com/aloksingh3112/BookMyMovie/routes"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	route := gin.Default()
-	route.GET("/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{"data": "gg"})
+	router := gin.Default()
+	db := db.Setup()
+	router.Use(func(c *gin.Context) {
+		c.Set("db", db)
+		c.Next()
 	})
 
-	route.Run()
+	routes.CinemaRoute(router)
+	routes.MovieRoutes(router)
+	router.Run()
 }
