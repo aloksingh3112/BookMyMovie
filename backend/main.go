@@ -14,7 +14,10 @@ func main() {
 		c.Next()
 	})
 
-	routes.CinemaRoute(router)
+	routes.UserRoute(router)
 	routes.MovieRoutes(router)
+	routes.TheatreRoute(router)
+	routes.BookingRoute(router)
+	routes.AuthRoute(router)
 	router.Run()
 }
