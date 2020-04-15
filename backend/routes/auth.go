@@ -9,5 +9,6 @@ func AuthRoute(c *gin.Engine) {
 	auth := c.Group("/auth")
 	{
 		auth.POST("/signup", controller.Signup)
+		auth.POST("/login", controller.Login)
 	}
 }

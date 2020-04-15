@@ -3,8 +3,12 @@ package controller
 import (
 	"fmt"
 	"net/http"
+	"time"
+
+	"github.com/aloksingh3112/BookMyMovie/config"
 
 	"github.com/aloksingh3112/BookMyMovie/models"
+	"github.com/dgrijalva/jwt-go"
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/aloksingh3112/BookMyMovie/types"
@@ -22,6 +26,28 @@ func genHashSalt(pwd []byte) string {
 
 func compareHashPassword(hashPassword []byte, password []byte) error {
 	return bcrypt.CompareHashAndPassword(hashPassword, password)
+}
+
+func genToken(username string, email string, typeofuser string) (string, error) {
+	expirationTime := time.Now().Add(5 * time.Minute)
+
+	claim := &types.Claims{
+		Username:   username,
+		Email:      email,
+		Typeofuser: typeofuser,
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: expirationTime.Unix(),
+		},
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claim)
+	tokenString, err := token.SignedString(config.SECRETKEY)
+	if err != nil {
+		fmt.Println("Some thing went wrong", err)
+		return "", err
+	}
+	return tokenString, err
+
 }
 
 func Signup(c *gin.Context) {
@@ -58,11 +84,25 @@ func Login(c *gin.Context) {
 		fmt.Println(err)
 		return
 	}
-	dbData := db.Where("username=?", data.Username).First(&user)
-	fmt.Println(dbData.Value, dbData.Error)
-	if dbData.Error != nil {
-		fmt.Println(dbData.Error)
+	error := db.Where("username=?", data.Username).First(&user).Error
+
+	if error != nil {
+		fmt.Println(error)
 		return
 	}
 
+	isValidPass := compareHashPassword([]byte(user.Password), []byte(data.Password))
+
+	if isValidPass != nil {
+		fmt.Println("Password is wrong")
+		return
+	}
+
+	token, _ := genToken(user.Username, user.Email, user.TypeOfUser)
+	resData := map[string]string{
+		"username":   user.Username,
+		"typeofuser": user.TypeOfUser,
+		"token":      token,
+	}
+	c.JSON(http.StatusOK, gin.H{"data": resData, "statusCode": 200, "message": "user is login successfully"})
 }
