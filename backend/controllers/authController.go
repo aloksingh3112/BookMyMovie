@@ -29,9 +29,8 @@ func compareHashPassword(hashPassword []byte, password []byte) error {
 }
 
 func genToken(username string, email string, typeofuser string) (string, error) {
-	expirationTime := time.Now().Add(5 * time.Minute)
-
-	claim := &types.Claims{
+	expirationTime := time.Now().Add(2000 * time.Minute)
+	claim := types.Claims{
 		Username:   username,
 		Email:      email,
 		Typeofuser: typeofuser,
@@ -42,6 +41,7 @@ func genToken(username string, email string, typeofuser string) (string, error) 
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claim)
 	tokenString, err := token.SignedString(config.SECRETKEY)
+
 	if err != nil {
 		fmt.Println("Some thing went wrong", err)
 		return "", err
