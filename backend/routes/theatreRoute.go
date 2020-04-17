@@ -1,7 +1,8 @@
 package routes
 
 import (
-	"net/http"
+	controller "github.com/aloksingh3112/BookMyMovie/controllers"
+	"github.com/aloksingh3112/BookMyMovie/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -9,9 +10,8 @@ import (
 func TheatreRoute(r *gin.Engine) {
 	theatre := r.Group("/theatre")
 	{
-		theatre.GET("/all", func(c *gin.Context) {
-			c.JSON(http.StatusOK, gin.H{"data": "hello"})
-		})
+		theatre.POST("/addtheatre", middleware.VerifyToken, middleware.VerifyUser, controller.CreateTheatre)
+
 	}
 
 }
