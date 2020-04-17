@@ -10,4 +10,5 @@ type Movie struct {
 	Year     string    `json:"year" gorm:"not null"`
 	Duration string    `json:"duration" gorm:"not null"`
 	Theatre  []Theatre `json:"theatre" gorm:"many2many:movie_theatre;"`
+	UserID   uint
 }

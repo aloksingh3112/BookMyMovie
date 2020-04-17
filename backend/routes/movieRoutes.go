@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"net/http"
+	controller "github.com/aloksingh3112/BookMyMovie/controllers"
 
 	"github.com/gin-gonic/gin"
 )
@@ -9,8 +9,6 @@ import (
 func MovieRoutes(router *gin.Engine) {
 	movie := router.Group("/movie")
 	{
-		movie.GET("/all", func(c *gin.Context) {
-			c.JSON(http.StatusOK, gin.H{"data": "movie"})
-		})
+		movie.POST("/addMovie", controller.AddMovie)
 	}
 }

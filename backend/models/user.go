@@ -11,7 +11,7 @@ type User struct {
 	Email      string    `json:"email" gorm:"unique;notnull"`
 	Name       string    `json:"name" gorm:"not_null"`
 	TypeOfUser string    `json:"typeofuser" gorm:"default:'USER'"`
-	Movie      []Movie   `gorm:"foreignkey:MovieID"`
+	Movie      []Movie   `json:"movie"`
 	Theatre    []Theatre `gorm:"foreignkey:ID"`
 	Booking    []Booking `gorm:"foreignkey:ID"`
 }
