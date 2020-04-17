@@ -36,3 +36,68 @@ func CreateTheatre(c *gin.Context) {
 	//db.Debug().Where("username=?", userInput.Username).Preload("Theatre").First(&user)
 	//fmt.Println(user)
 }
+
+func GetTheatres(c *gin.Context) {
+	db := c.MustGet("db").(*gorm.DB)
+	inputUser := utils.DecodeToken(c)
+	var user models.User
+	err := db.Where("username =?", inputUser.Username).Preload("Theatre").First(&user).Error
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{"data": err, "message": "Something went wrong", "statusCode": 500})
+		return
+	}
+	if len(user.Movie) == 0 {
+		c.JSON(http.StatusOK, gin.H{"data": user.Theatre, "message": "No Data Found", "statusCode": 200})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": user.Theatre, "message": "Fetch Data Successfully", "statusCode": 200})
+
+}
+
+func UpdateTheatre(c *gin.Context) {
+	db := c.MustGet("db").(*gorm.DB)
+	var inputTheatre types.Theatre
+	var theatre models.Theatre
+	c.ShouldBindJSON(&inputTheatre)
+	err := db.Where("id=?", c.Param("id")).First(&theatre).Error
+
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{"data": err, "message": "No data found", "statusCode": 400})
+		return
+	}
+	err = db.Model(&theatre).Update(&inputTheatre).Error
+
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{"data": err, "message": "Some thing went wrong", "statusCode": 500})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": theatre, "message": "Data updated Successfully", "statusCode": 200})
+
+}
+
+func DeleteTheatre(c *gin.Context) {
+	db := c.MustGet("db").(*gorm.DB)
+	inputUser := utils.DecodeToken(c)
+	var theatre models.Theatre
+	var user models.User
+	db.Where("username=?", inputUser.Username).First(&user)
+	err := db.Where("id=?", c.Param("id")).First(&theatre).Error
+
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{"data": err, "message": "No data found", "statusCode": 400})
+		return
+	}
+
+	db.Model(&user).Association("Theatre").Delete(&theatre)
+	err = db.Delete(&theatre).Error
+
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{"data": err, "message": "Some thing went wrong", "statusCode": 500})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": theatre, "message": "Data deleted successfully", "statusCode": 200})
+
+}
