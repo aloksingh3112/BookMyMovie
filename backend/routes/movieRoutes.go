@@ -15,4 +15,9 @@ func MovieRoutes(router *gin.Engine) {
 		movie.PUT("/updateMovie/:id", middleware.VerifyToken, middleware.VerifyUser, controller.UpdateMovies)
 		movie.DELETE("/deleteMovie/:id", middleware.VerifyToken, middleware.VerifyUser, controller.DeleteMovie)
 	}
+	movieTheatreMap := router.Group("/map")
+	{
+		movieTheatreMap.POST("/movieTheatre", middleware.VerifyToken, middleware.VerifyUser, controller.MapMovieWithTheatre)
+
+	}
 }

@@ -28,7 +28,7 @@ func AddMovie(c *gin.Context) {
 	}
 	db.Where("username=?", inputUser.Username).First(&user)
 
-	movie := models.Movie{Title: inputMovie.Title, MovieID: inputMovie.MovieID, Language: inputMovie.Language,
+	movie := models.Movie{Title: inputMovie.Title, Language: inputMovie.Language,
 		Genre: inputMovie.Genre, Director: inputMovie.Director, StarCast: inputMovie.StarCast,
 		Year: inputMovie.Year, Duration: inputMovie.Duration, UserID: user.ID}
 	err = db.Save(&movie).Error
@@ -66,7 +66,7 @@ func UpdateMovies(c *gin.Context) {
 	var inputMovie types.Movie
 	var movie models.Movie
 	c.ShouldBindJSON(&inputMovie)
-	err := db.Where("movie_id=?", c.Param("id")).First(&movie).Error
+	err := db.Where("id=?", c.Param("id")).First(&movie).Error
 
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{"data": err, "message": "Some thing went wrong", "statusCode": 500})
@@ -89,7 +89,7 @@ func DeleteMovie(c *gin.Context) {
 	var movie models.Movie
 	var user models.User
 	db.Where("username=?", inputUser.Username).First(&user)
-	err := db.Where("movie_id=?", c.Param("id")).First(&movie).Error
+	err := db.Where("id=?", c.Param("id")).First(&movie).Error
 
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{"data": err, "message": "No data found", "statusCode": 400})
@@ -97,7 +97,7 @@ func DeleteMovie(c *gin.Context) {
 	}
 
 	db.Model(&user).Association("Movie").Delete(&movie)
-	err = db.Delete(&movie).Error
+	err = db.Unscoped().Delete(&movie).Error
 
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{"data": err, "message": "Some thing went wrong", "statusCode": 500})
@@ -105,5 +105,44 @@ func DeleteMovie(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"data": movie, "message": "Data deleted successfully", "statusCode": 200})
+
+}
+
+func MapMovieWithTheatre(c *gin.Context) {
+	db := c.MustGet("db").(*gorm.DB)
+
+	var movietheatreInput types.MovieTheatre
+	//var movieInput types.Movie
+	//var theatreInput types.Theatre
+
+	c.ShouldBindJSON(&movietheatreInput)
+	var movie models.Movie
+	//var theatre models.Theatre
+	data := []models.Theatre{}
+	//var movieTheatre models.MovieTheatre
+
+	db.Model(&models.MovieTheatre{}).AddForeignKey("movie_id", "movies(id)", "CASCADE", "CASCADE")
+	db.Model(&models.MovieTheatre{}).AddForeignKey("theatre_id", "theatres(id)", "CASCADE", "CASCADE")
+
+	db.Where("id=?", movietheatreInput.MovieID).First(&movie)
+
+	for _, id := range movietheatreInput.TheatreID {
+		var t models.Theatre
+		db.Where("id=?", id).First(&t)
+		fmt.Println(id, t)
+		data = append(data, t)
+	}
+	fmt.Println(data)
+	db.Model(&movie).Association("Theatre").Append(&data)
+	err := db.Save(&movie).Error
+
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{"data": err, "message": "something went wrong", "statusCode": 500})
+		return
+	}
+	//db.Model(&movie).Preload("Theatre").First(&movie)
+	c.JSON(http.StatusOK, gin.H{"data": nil, "message": "Mapping is successfull", "statusCode": 200})
+
+	fmt.Println(movie)
 
 }

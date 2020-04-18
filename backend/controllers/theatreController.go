@@ -91,7 +91,7 @@ func DeleteTheatre(c *gin.Context) {
 	}
 
 	db.Model(&user).Association("Theatre").Delete(&theatre)
-	err = db.Delete(&theatre).Error
+	err = db.Unscoped().Delete(&theatre).Error
 
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{"data": err, "message": "Some thing went wrong", "statusCode": 500})

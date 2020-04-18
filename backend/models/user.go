@@ -13,5 +13,5 @@ type User struct {
 	TypeOfUser string    `json:"typeofuser" gorm:"default:'USER'"`
 	Movie      []Movie   `json:"movie"`
 	Theatre    []Theatre `json:"theatre"`
-	Booking    []Booking `gorm:"foreignkey:ID"`
+	Booking    []Booking `json:"booking"`
 }

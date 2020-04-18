@@ -1,7 +1,11 @@
 package models
 
+import (
+	"github.com/jinzhu/gorm"
+)
+
 type Movie struct {
-	MovieID  uint      `gorm:"primary_key;unique"`
+	gorm.Model
 	Title    string    `json:"title" gorm:"not null"`
 	Language string    `json:"language" gorm:"not null;"`
 	Genre    string    `json:"genre" gorm:"not null;"`
@@ -9,6 +13,6 @@ type Movie struct {
 	StarCast string    `json:"starcast" gorm:"not null"`
 	Year     string    `json:"year" gorm:"not null"`
 	Duration string    `json:"duration" gorm:"not null"`
-	Theatre  []Theatre `json:"theatre" gorm:"many2many:movie_theatre;"`
+	Theatre  []Theatre `json:"theatre" gorm:"many2many:movie_theatres;"`
 	UserID   uint
 }

@@ -15,7 +15,7 @@ func Setup() *gorm.DB {
 	if err != nil {
 		panic("Unable to connect to db")
 	}
-	db.AutoMigrate(&models.Movie{}, &models.Theatre{}, &models.Booking{}, &models.Seat{}, &models.User{})
+	db.CreateTable(&models.Movie{}, &models.Theatre{}, &models.Booking{}, &models.Seat{}, &models.User{}, models.MovieTheatre{})
 	return db
 
 }
