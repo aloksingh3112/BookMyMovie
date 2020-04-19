@@ -7,5 +7,7 @@ import (
 type Seat struct {
 	gorm.Model
 	SeatNumber string `json:"seatnumber"`
-	IsBooked   bool   `json:"isbooked" goom:"default:false"`
+	IsBooked   bool   `json:"isbooked" gorm:"default:false"`
+	Price      string `json:"price"`
+	TimeID     uint
 }

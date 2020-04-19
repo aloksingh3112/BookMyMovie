@@ -6,4 +6,5 @@ type Booking struct {
 	gorm.Model
 	Movie  Movie
 	Theate Theatre
+	Seat   []Seat
 }
