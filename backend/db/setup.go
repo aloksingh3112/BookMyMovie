@@ -15,7 +15,9 @@ func Setup() *gorm.DB {
 	if err != nil {
 		panic("Unable to connect to db")
 	}
-	db.CreateTable(&models.Movie{}, &models.Theatre{}, &models.Booking{}, &models.Seat{}, &models.User{}, models.MovieTheatre{})
+	// db.DropTableIfExists(&models.Movie{}, &models.Theatre{}, &models.Booking{}, &models.Seat{}, &models.User{}, models.MovieTheatre{}, models.DateTime{}, models.Time{}, models.Seat{})
+
+	db.AutoMigrate(&models.Movie{}, &models.Theatre{}, &models.Booking{}, &models.Seat{}, &models.User{}, models.MovieTheatre{}, models.DateTime{}, models.Time{}, models.Seat{})
 	return db
 
 }

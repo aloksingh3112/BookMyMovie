@@ -8,4 +8,5 @@ type Theatre struct {
 	Location    string `json:"location" gorm:"not null"`
 	City        string `json:"city" gorm:"not null"`
 	UserID      uint
+	DateTimeID  uint
 }
