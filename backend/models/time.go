@@ -6,7 +6,6 @@ import (
 
 type Time struct {
 	gorm.Model
-	Time       string `json:"time"`
-	Seats      []Seat `json:"seats" ForeignKey:"TimeID"`
-	DateTimeID uint
+	Time  string `json:"time"`
+	Seats []Seat `json:"seats" ForeignKey:"TimeID"`
 }

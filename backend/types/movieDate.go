@@ -1,6 +1,6 @@
 package types
 
-type MovieTheatre struct {
+type MovieDate struct {
 	MovieID   uint     `json:"movieID"`
 	TheatreID []uint   `json:"theatreIDS"`
 	Dates     []string `json:"dates"`

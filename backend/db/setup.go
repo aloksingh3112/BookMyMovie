@@ -17,7 +17,7 @@ func Setup() *gorm.DB {
 	}
 	// db.DropTableIfExists(&models.Movie{}, &models.Theatre{}, &models.Booking{}, &models.Seat{}, &models.User{}, models.MovieTheatre{}, models.DateTime{}, models.Time{}, models.Seat{})
 
-	db.AutoMigrate(&models.Movie{}, &models.Theatre{}, &models.Booking{}, &models.Seat{}, &models.User{}, models.MovieTheatre{}, models.DateTime{}, models.Time{}, models.Seat{})
+	db.AutoMigrate(&models.Movie{}, &models.Theatre{}, &models.Booking{}, &models.Seat{}, &models.User{}, models.MovieDate{}, models.Date{}, models.Time{}, models.Seat{}, models.TheatreTime{}, models.DateTheatre{})
 	return db
 
 }

@@ -111,63 +111,84 @@ func DeleteMovie(c *gin.Context) {
 func MapMovieWithTheatre(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
 
-	var movietheatreInput types.MovieTheatre
 	//var movieInput types.Movie
-	//var theatreInput types.Theatre
+	var movieDateInput types.MovieDate
 
-	c.ShouldBindJSON(&movietheatreInput)
 	var movie models.Movie
-	//var theatre models.Theatre
-	data := []models.Theatre{}
-	// var movieTheatre models.MovieTheatre
+	//var movieDate models.MovieDate
+	var dateData []models.Date
 
-	db.Model(&models.MovieTheatre{}).AddForeignKey("movie_id", "movies(id)", "CASCADE", "CASCADE")
-	db.Model(&models.MovieTheatre{}).AddForeignKey("theatre_id", "theatres(id)", "CASCADE", "CASCADE")
-	db.Model(&models.DateTime{}).AddForeignKey("date_time_id", "date_times(id)", "CASCADE", "CASCADE")
-	db.Model(&models.Time{}).AddForeignKey("time_id", "times(id)", "CASCADE", "CASCADE")
-	db.Model(&models.Movie{}).AddForeignKey("date_time_id", "date_times(id)", "CASCADE", "CASCADE")
-	db.Model(&models.Theatre{}).AddForeignKey("date_time_id", "date_times(id)", "CASCADE", "CASCADE")
+	c.ShouldBindJSON(&movieDateInput)
 
-	db.Where("id=?", movietheatreInput.MovieID).First(&movie)
+	db.Model(&models.MovieDate{}).AddForeignKey("movie_id", "movies(id)", "CASCADE", "CASCADE")
+	db.Model(&models.MovieDate{}).AddForeignKey("date_id", "dates(id)", "CASCADE", "CASCADE")
+	db.Model(&models.DateTheatre{}).AddForeignKey("date_id", "dates(id)", "CASCADE", "CASCADE")
+	db.Model(&models.DateTheatre{}).AddForeignKey("theatre_id", "theatres(id)", "CASCADE", "CASCADE")
+	db.Model(&models.TheatreTime{}).AddForeignKey("time_id", "times(id)", "CASCADE", "CASCADE")
+	db.Model(&models.TheatreTime{}).AddForeignKey("theatre_id", "theatres(id)", "CASCADE", "CASCADE")
+	db.Model(&models.Seat{}).AddForeignKey("time_id", "times(id)", "CASCADE", "CASCADE")
+	db.Where("id=?", movieDateInput.MovieID).First(&movie)
 
-	for _, id := range movietheatreInput.TheatreID {
-		var t models.Theatre
-		db.Where("id=?", id).First(&t)
-		//fmt.Println(id, t)
-		for _, date := range movietheatreInput.Dates {
-			//fmt.Println("dates", date)
-			times := utils.GetTime(c, movietheatreInput.Times)
-			//fmt.Println(times)
-			d := models.DateTime{
-				Date:  date,
-				Times: times,
+	for _, date := range movieDateInput.Dates {
+		var t models.Date
+		err := db.Where("date=?", date).First(&t).Error
+		if err != nil {
+			tx := models.Date{
+				Date: date,
 			}
-			db.Model(&d).Association("Movie").Append(&movie)
-			db.Model(&d).Association("Movie").Append(&t)
-			db.Save(&d)
+			db.Save(&tx)
+			dateData = append(dateData, tx)
 
-			//fmt.Println(err)
+		} else {
+			dateData = append(dateData, t)
 		}
-		// fmt.Println(movieTheatre, dt)
 
-		data = append(data, t)
 	}
-	// fmt.Println(data)
-	db.Model(&movie).Association("Theatre").Append(&data)
-	err := db.Save(&movie).Error
 
-	// for _, id := range movietheatreInput.TheatreID {
-	// 	//fmt.Println("id", id)
+	db.Model(&movie).Association("Dates").Append(&dateData)
+	db.Save(&movie)
+	db.Model(&movie).Preload("Dates").First(&movie)
 
-	// }
+	for _, date := range movieDateInput.Dates {
+		var TheatreData []models.Theatre
+		var dt models.Date
+		db.Where("date=?", date).First(&dt)
+		for _, id := range movieDateInput.TheatreID {
+			var t models.Theatre
+			db.Where("id=?", id).First(&t)
+			TheatreData = append(TheatreData, t)
 
-	if err != nil {
-		c.JSON(http.StatusOK, gin.H{"data": err, "message": "something went wrong", "statusCode": 500})
-		return
+		}
+		db.Model(&dt).Association("Theatre").Append(&TheatreData)
+		db.Save(&dt)
+
 	}
-	//db.Model(&movie).Preload("Theatre").First(&movie)
-	c.JSON(http.StatusOK, gin.H{"data": nil, "message": "Mapping is successfull", "statusCode": 200})
 
-	fmt.Println(movie)
+	for _, id := range movieDateInput.TheatreID {
+		var times []models.Time
+		var dt models.Theatre
+		db.Where("id=?", id).First(&dt)
+		for _, time := range movieDateInput.Times {
+			var t models.Time
+			err := db.Where("time=?", time).First(&t).Error
+			if err != nil {
+				tx := models.Time{
+					Time: time,
+				}
+				db.Save(&tx)
+				times = append(times, tx)
+
+			} else {
+				times = append(times, t)
+			}
+
+		}
+		db.Model(&dt).Association("Time").Append(&times)
+		db.Save(&dt)
+
+	}
+
+	// var dt models.Date
+	c.JSON(http.StatusOK, gin.H{"data": movie})
 
 }
