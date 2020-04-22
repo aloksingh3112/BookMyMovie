@@ -55,7 +55,7 @@ func CancelTicket(c *gin.Context) {
 		return
 
 	}
-
+	db.Model(&seatMap).Unscoped().Delete(&seatMap)
 	c.JSON(http.StatusOK, gin.H{"data": seatMap, "message": "Ticket canceled successfully", "statusCode": 200})
 
 }
