@@ -11,6 +11,7 @@ func BookingRoute(r *gin.Engine) {
 	booking := r.Group("/booking")
 	{
 		booking.POST("/bookMovie", middleware.VerifyToken, middleware.VerifyUser, controller.BookMovie)
+		booking.DELETE("/cancelTicket/:id", middleware.VerifyToken, middleware.VerifyUser, controller.CancelTicket)
 
 	}
 }

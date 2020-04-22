@@ -195,16 +195,22 @@ func MapMovieWithTheatre(c *gin.Context) {
 
 func GetSeatMapping(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
-	decodedUser := utils.DecodeToken(c)
+	//decodedUser := utils.DecodeToken(c)
 	db.Model(&models.Seat{}).AddForeignKey("seat_map_id", "seat_maps(id)", "CASCADE", "CASCADE")
 	var seatMapInput types.SeatMap
-	var seatMap models.SeatMap
-	var user models.User
+	var seatMap []models.SeatMap
+	var seatData []models.SeatMap
+	// var user models.User
 	c.ShouldBindJSON(&seatMapInput)
-	db.Where("username?=", decodedUser.Username).First(&user)
-	db.Where("user_id", user.ID).Where("movie_id=?", seatMapInput.MovieID).Where("date_id=?", seatMapInput.DateID).Where("theatre_id=?", seatMapInput.TheatreID).Where("time_id=?", seatMapInput.TimeID).First(&seatMap)
-	db.Where("id=?", seatMap.ID).Preload("Seat").First(&seatMap)
+	//db.Where("username?=", decodedUser.Username).First(&user)
+	db.Where("movie_id=?", seatMapInput.MovieID).Where("date_id=?", seatMapInput.DateID).Where("theatre_id=?", seatMapInput.TheatreID).Where("time_id=?", seatMapInput.TimeID).Find(&seatMap)
 	fmt.Println(seatMap)
-	c.JSON(http.StatusOK, gin.H{"data": seatMap, "message": "Seat Data", "statusCode": 200})
+	for _, data := range seatMap {
+		var seatMap models.SeatMap
+		db.Where("id=?", data.ID).Preload("Seat").Find(&seatMap)
+		seatData = append(seatData, seatMap)
+
+	}
+	c.JSON(http.StatusOK, gin.H{"data": seatData, "message": "Seat Data", "statusCode": 200})
 
 }

@@ -41,7 +41,21 @@ func BookMovie(c *gin.Context) {
 	db.Model(&user).Association("Booking").Append(&seatData)
 	db.Save(&user)
 
-	db.Model(&seatData).Preload("Seat").First(&seatData)
+	db.Model(&seatData).Preload("Booking").First(&seatData)
 	c.JSON(http.StatusOK, gin.H{"data": seatData, "message": "Ticket booked successfully", "statusCode": 200})
+
+}
+
+func CancelTicket(c *gin.Context) {
+	db := c.MustGet("db").(*gorm.DB)
+	var seatMap models.SeatMap
+	err := db.Where("id=?", c.Param("id")).First(&seatMap).Error
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{"data": err, "message": "Something went wrong", "statusCode": 500})
+		return
+
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": seatMap, "message": "Ticket canceled successfully", "statusCode": 200})
 
 }
