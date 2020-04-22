@@ -1,10 +1,8 @@
 package types
 
-import (
-	"github.com/aloksingh3112/BookMyMovie/models"
-)
+import "github.com/aloksingh3112/BookMyMovie/models"
 
-type SeatMap struct {
+type Booking struct {
 	UserID    uint          `json:"userId"`
 	MovieID   uint          `json:"movieId"`
 	DateID    uint          `json:"dateId"`

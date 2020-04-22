@@ -6,6 +6,7 @@ import (
 
 type SeatMap struct {
 	gorm.Model
+	UserID    uint `json:"userId"`
 	MovieID   uint `json:"movieId"`
 	DateID    uint `json:"dateId"`
 	TheatreID uint `json:"theatreId"`

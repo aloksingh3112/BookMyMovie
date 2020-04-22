@@ -10,4 +10,5 @@ type Seat struct {
 	Price      string `json:"price"`
 	Type       string `json:"type"`
 	SeatMapID  uint
+	BookingID  uint
 }
