@@ -192,3 +192,38 @@ func MapMovieWithTheatre(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": movie})
 
 }
+
+func GetSeatMapping(c *gin.Context) {
+	db := c.MustGet("db").(*gorm.DB)
+	db.Model(&models.Seat{}).AddForeignKey("seat_map_id", "seat_maps(id)", "CASCADE", "CASCADE")
+	var seatMapInput types.SeapMap
+	var seatMap models.SeatMap
+	c.ShouldBindJSON(&seatMapInput)
+
+	db.Where("movie_id=?", seatMapInput.MovieID).Where("date_id=?", seatMapInput.DateID).Where("theatre_id=?", seatMapInput.TheatreID).Where("time_id=?", seatMapInput.TimeID).First(&seatMap)
+	db.Where("id=?", seatMap.ID).Preload("Seat").First(&seatMap)
+	fmt.Println(seatMap)
+	c.JSON(http.StatusOK, gin.H{"data": seatMap, "message": "Seat Data", "statusCode": 200})
+	// if err == nil {
+	// 	c.JSON(http.StatusOK, gin.H{"data": seatMap, "message": "no data found", "statusCode": 400})
+	// } else {
+	// 	var data []models.Seat
+	// 	for i := 0; i < len(seatMapInput.Seat); i++ {
+	// 		data = append(data, seatMapInput.Seat[i])
+	// 	}
+	// 	seatData := models.SeatMap{
+	// 		MovieID:   seatMapInput.MovieID,
+	// 		DateID:    seatMapInput.DateID,
+	// 		TheatreID: seatMapInput.TheatreID,
+	// 		TimeID:    seatMapInput.TimeID,
+	// 		Seat:      data,
+	// 	}
+	// 	db.Model(&seatData).Association("Seat").Append(&data)
+	// 	db.Save(&seatData)
+
+	// 	db.Model(&seatData).Preload("Seat").First(&seatData)
+	// 	c.JSON(http.StatusOK, gin.H{"data": seatData, "message": "gg", "statusCode": 200})
+
+	// }
+
+}

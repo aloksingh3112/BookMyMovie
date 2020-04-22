@@ -18,6 +18,7 @@ func MovieRoutes(router *gin.Engine) {
 	movieTheatreMap := router.Group("/map")
 	{
 		movieTheatreMap.POST("/movieTheatre", middleware.VerifyToken, middleware.VerifyUser, controller.MapMovieWithTheatre)
+		movieTheatreMap.POST("/seatMap", middleware.VerifyToken, middleware.VerifyUser, controller.GetSeatMapping)
 
 	}
 }
