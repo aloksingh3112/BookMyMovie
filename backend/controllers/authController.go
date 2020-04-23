@@ -53,24 +53,26 @@ func genToken(username string, email string, typeofuser string) (string, error) 
 func Signup(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
 	var data types.User
-	err := c.ShouldBindJSON(&data)
+	c.ShouldBindJSON(&data)
 	var user models.User
-	if err != nil {
-		fmt.Println(err.Error())
-	}
 
-	error := db.Where("username =? AND email=?", data.Username, data.Email).First(&user).Error
+	error := db.Where("username =?", data.Username).First(&user).Error
+
 	if error == nil {
-		fmt.Println(error)
+		c.JSON(http.StatusOK, gin.H{"data": nil, "message": "username is already present", "statusCode": 400})
+		return
+	}
+	error = db.Where("email=?", data.Email).First(&user).Error
+	if error == nil {
+		c.JSON(http.StatusOK, gin.H{"data": nil, "message": "email is already registered", "statusCode": 400})
 		return
 	}
 
 	b := []byte(data.Password)
 	password := genHashSalt(b)
-	fmt.Println(password, data.Username)
 	userData := models.User{Username: data.Username, Password: password, TypeOfUser: data.TypeOfUser, Email: data.Email, Name: data.Name}
 	db.Create(&userData)
-	c.JSON(http.StatusOK, gin.H{"data": userData})
+	c.JSON(http.StatusOK, gin.H{"data": userData, "message": "user signup successfully", "statusCode": 200})
 
 }
 
@@ -87,14 +89,14 @@ func Login(c *gin.Context) {
 	error := db.Where("username=?", data.Username).First(&user).Error
 
 	if error != nil {
-		fmt.Println(error)
+		c.JSON(http.StatusOK, gin.H{"data": nil, "statusCode": 500, "message": "User does not exist"})
 		return
 	}
 
 	isValidPass := compareHashPassword([]byte(user.Password), []byte(data.Password))
 
 	if isValidPass != nil {
-		fmt.Println("Password is wrong")
+		c.JSON(http.StatusOK, gin.H{"data": nil, "statusCode": 400, "message": "Please enter valid credentials"})
 		return
 	}
 
