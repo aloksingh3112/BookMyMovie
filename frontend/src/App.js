@@ -6,7 +6,9 @@ const App = () => {
   return (
     <React.Fragment>
       <Header></Header>
-      <Router></Router>
+      <div className="container" style={{ marginTop: "100px" }}>
+        <Router></Router>
+      </div>
     </React.Fragment>
   );
 };
