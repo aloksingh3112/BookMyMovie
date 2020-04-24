@@ -1,9 +1,27 @@
 import React from "react";
 import { useForm } from "react-hook-form";
+import Axios from "axios";
+import { LOGIN } from "../../config/url";
+import { useState } from "react";
 
-const Login = () => {
-  const onSubmit = (data) => {
+const Login = (props) => {
+  const [state, setState] = useState({});
+  const onSubmit = (data, e) => {
     console.log(data);
+    Axios.post(LOGIN, data)
+      .then((responseData) => {
+        setState(responseData.data);
+        console.log(responseData.data);
+        if (responseData.data.statusCode < 300) {
+          localStorage.setItem("token", responseData.data.data.token);
+          props.history.push("/");
+        } else {
+          setTimeout(() => {
+            setState({});
+          }, 1000);
+        }
+      })
+      .catch((err) => console.log(err));
   };
 
   const { register, handleSubmit, errors } = useForm();
@@ -40,6 +58,9 @@ const Login = () => {
       <button className="btn btn-secondary ml-2" type="button">
         Cancel
       </button>
+      {state && state.statusCode > 300 && (
+        <div className="alert alert-warning mt-2">{state.message}</div>
+      )}
     </form>
   );
 };

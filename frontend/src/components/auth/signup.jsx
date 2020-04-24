@@ -1,12 +1,28 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-
+import axios from "axios";
+import { SIGN_UP } from "../../config/url";
 const Signup = () => {
-  const onSubmit = (data) => {
-    console.log(data);
+  const [state, setstate] = useState({});
+  const { register, handleSubmit, errors, reset } = useForm();
+
+  const onSubmit = (data, e) => {
+    axios
+      .post(SIGN_UP, data)
+      .then((responseData) => {
+        setstate(responseData.data);
+        if (responseData.data.statusCode < 300) {
+          e.target.reset();
+        }
+        setTimeout(() => {
+          setstate({});
+        }, 1000);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
-  const { register, handleSubmit, errors } = useForm();
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="form-group">
@@ -61,6 +77,13 @@ const Signup = () => {
       <button className="btn btn-secondary ml-2" type="button">
         Cancel
       </button>
+
+      {state && state.statusCode > 300 && (
+        <div className="alert alert-error mt-2">{state.message}</div>
+      )}
+      {state && state.statusCode < 300 && (
+        <div className="alert alert-success mt-2">{state.message}</div>
+      )}
     </form>
   );
 };
