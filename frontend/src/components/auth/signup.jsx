@@ -4,7 +4,7 @@ import axios from "axios";
 import { SIGN_UP } from "../../config/url";
 const Signup = () => {
   const [state, setstate] = useState({});
-  const { register, handleSubmit, errors, reset } = useForm();
+  const { register, handleSubmit, errors } = useForm();
 
   const onSubmit = (data, e) => {
     axios
@@ -79,7 +79,7 @@ const Signup = () => {
       </button>
 
       {state && state.statusCode > 300 && (
-        <div className="alert alert-error mt-2">{state.message}</div>
+        <div className="alert alert-warning mt-2">{state.message}</div>
       )}
       {state && state.statusCode < 300 && (
         <div className="alert alert-success mt-2">{state.message}</div>

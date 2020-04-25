@@ -5,22 +5,34 @@ import TheatreDate from "../theatreDate/theatredate";
 import SeatContainer from "../seatContainer/seatcontainer";
 import Confirmation from "../confirmation/confirmation";
 import MovieContainer from "../movie/moviecontainer";
-import ThereContainer from "../theatre/theatreContainer";
+import TheatreContainer from "../theatre/theatreContainer";
 import Login from "../auth/login";
 import Signup from "../auth/signup";
+import ProtectedRoute from "./protected";
+import AuthorisedRoute from "./authorisedRoute";
 
 const Router = () => {
   return (
     <Switch>
       <Route exact path="/" component={Home}></Route>
-      <Route path="/theatreDate/:id" component={TheatreDate}></Route>
-      <Route path="/seat" component={SeatContainer}></Route>
-      <Route path="/booked" component={Confirmation}></Route>
+      <ProtectedRoute
+        path="/theatreDate/:id"
+        component={TheatreDate}
+      ></ProtectedRoute>
+      <ProtectedRoute path="/seat" component={SeatContainer}></ProtectedRoute>
+      <ProtectedRoute path="/booked" component={Confirmation}></ProtectedRoute>
       <Route path="/login" component={Login}></Route>
+      {/* <Route path="/signup" component={Signup}></Route> */}
       <Route path="/signup" component={Signup}></Route>
 
-      <Route path="/addMovie" component={MovieContainer}></Route>
-      <Route path="/addTheatre" component={ThereContainer}></Route>
+      <AuthorisedRoute
+        path="/addMovie"
+        component={MovieContainer}
+      ></AuthorisedRoute>
+      <AuthorisedRoute
+        path="/addTheatre"
+        component={TheatreContainer}
+      ></AuthorisedRoute>
     </Switch>
   );
 };

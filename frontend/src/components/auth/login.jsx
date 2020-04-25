@@ -44,13 +44,10 @@ const Login = (props) => {
           type="password"
           className="form-control"
           name="password"
-          ref={register({ required: true, minLength: 6 })}
+          ref={register({ required: true })}
         />
         {errors.password && errors.password.type === "required" && (
           <p>Password is required</p>
-        )}
-        {errors.password && errors.password.type === "minLength" && (
-          <p>Password is of minimum 6 digit </p>
         )}
       </div>
 
