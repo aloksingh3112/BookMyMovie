@@ -9,5 +9,6 @@ type Movie struct {
 	StarCast string `json:"starcast"`
 	Year     string `json:"year"`
 	Duration string `json:"duration"`
+	Poster   string `json:"poster"`
 	Theatre  []uint `json:"theatreIds"`
 }

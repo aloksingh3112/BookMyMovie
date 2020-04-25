@@ -3,12 +3,13 @@ import { useForm } from "react-hook-form";
 import Axios from "axios";
 import { LOGIN } from "../../config/url";
 import { useState } from "react";
+import { options } from "../../config/url";
 
 const Login = (props) => {
   const [state, setState] = useState({});
   const onSubmit = (data, e) => {
     console.log(data);
-    Axios.post(LOGIN, data)
+    Axios.post(LOGIN, data, options)
       .then((responseData) => {
         setState(responseData.data);
         console.log(responseData.data);

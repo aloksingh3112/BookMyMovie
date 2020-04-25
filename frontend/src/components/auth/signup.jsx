@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import { SIGN_UP } from "../../config/url";
+import { SIGN_UP, options } from "../../config/url";
+
 const Signup = () => {
   const [state, setstate] = useState({});
   const { register, handleSubmit, errors } = useForm();
 
   const onSubmit = (data, e) => {
     axios
-      .post(SIGN_UP, data)
+      .post(SIGN_UP, data, options)
       .then((responseData) => {
         setstate(responseData.data);
         if (responseData.data.statusCode < 300) {
