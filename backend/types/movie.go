@@ -1,7 +1,6 @@
 package types
 
 type Movie struct {
-	ID       string `json:"movieId"`
 	Title    string `json:"title"`
 	Language string `json:"language"`
 	Genre    string `json:"genre"`
@@ -10,5 +9,6 @@ type Movie struct {
 	Year     string `json:"year"`
 	Duration string `json:"duration"`
 	Poster   string `json:"poster"`
+	ImdbID   string `json:"imdbID"`
 	Theatre  []uint `json:"theatreIds"`
 }

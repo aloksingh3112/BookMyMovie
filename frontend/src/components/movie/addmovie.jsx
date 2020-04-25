@@ -2,10 +2,30 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import Axios from "axios";
 import { API_KEY } from "../../config/apikey";
+import { ADD_MOVIE, options } from "../../config/url";
 
-const AddMovies = () => {
+const AddMovies = (props) => {
   const [movie, setMovie] = useState({});
   const { register, handleSubmit, errors } = useForm();
+  const addMovie = (data) => {
+    const movie = {
+      Title: data.Title,
+      Language: data.Language,
+      Genre: data.Genre,
+      Director: data.Director,
+      StarCast: data.Actors,
+      Year: data.Year,
+      Duration: data.Runtime,
+      Poster: data.Poster,
+      ImdbID: data.imdbID,
+    };
+    Axios.post(ADD_MOVIE, movie, options)
+      .then((responseData) => {
+        console.log(responseData);
+      })
+      .catch((err) => console.log(err));
+    props.addMovie(movie);
+  };
   const searchMovie = (data, e) => {
     Axios.get(
       `http://www.omdbapi.com/?t=${data.title}&y=${data.year}&apikey=${API_KEY}`
@@ -83,7 +103,12 @@ const AddMovies = () => {
               <td>{movie.Runtime}</td>
 
               <td>
-                <button className="btn btn-primary">+</button>
+                <button
+                  className="btn btn-primary"
+                  onClick={() => addMovie(movie)}
+                >
+                  +
+                </button>
               </td>
             </tr>
           </tbody>

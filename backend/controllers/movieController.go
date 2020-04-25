@@ -16,7 +16,7 @@ func AddMovie(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
 	inputUser := utils.DecodeToken(c)
 	var user models.User
-
+	var movieModel models.Movie
 	var inputMovie types.Movie
 
 	err := c.ShouldBindJSON(&inputMovie)
@@ -27,10 +27,15 @@ func AddMovie(c *gin.Context) {
 		return
 	}
 	db.Where("username=?", inputUser.Username).First(&user)
-
+	error := db.Where("imdb_id=?", inputMovie.ImdbID).First(&movieModel).Error
+	fmt.Println(movieModel, error)
+	if error == nil {
+		c.JSON(http.StatusOK, gin.H{"data": err, "message": "Movie is already present", "statusCode": 400})
+		return
+	}
 	movie := models.Movie{Title: inputMovie.Title, Language: inputMovie.Language,
 		Genre: inputMovie.Genre, Director: inputMovie.Director, StarCast: inputMovie.StarCast,
-		Year: inputMovie.Year, Duration: inputMovie.Duration, UserID: user.ID}
+		Year: inputMovie.Year, Duration: inputMovie.Duration, ImdbID: inputMovie.ImdbID, Poster: inputMovie.Poster, UserID: user.ID}
 	err = db.Save(&movie).Error
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{"data": err, "message": "Something went wrong", "statusCode": 500})

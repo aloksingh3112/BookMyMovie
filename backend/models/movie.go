@@ -13,6 +13,8 @@ type Movie struct {
 	StarCast string `json:"starcast" gorm:"not null"`
 	Year     string `json:"year" gorm:"not null"`
 	Duration string `json:"duration" gorm:"not null"`
+	Poster   string `json:"poster"`
+	ImdbID   string `json:"imdbID"`
 	Dates    []Date `json:"dates" gorm:"many2many:movie_dates;"`
 	UserID   uint
 }

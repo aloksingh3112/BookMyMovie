@@ -9,3 +9,4 @@ export const options = {
 };
 export const SIGN_UP = `${BASE_URL}/auth/signup`;
 export const LOGIN = `${BASE_URL}/auth/login`;
+export const ADD_MOVIE = `${BASE_URL}/movie/addMovie`;
