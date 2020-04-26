@@ -12,3 +12,7 @@ export const LOGIN = `${BASE_URL}/auth/login`;
 export const ADD_MOVIE = `${BASE_URL}/movie/addMovie`;
 export const LIST_MOVIE = `${BASE_URL}/movie/getMovies`;
 export const DELETE_MOVIE = `${BASE_URL}/movie/deleteMovie`;
+
+export const ADD_THEATRE = `${BASE_URL}/theatre/addTheatre`;
+export const LIST_THEATRE = `${BASE_URL}/theatre/getTheatres`;
+export const DELETE_THEATRE = `${BASE_URL}/theatre/deleteTheatre`;

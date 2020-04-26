@@ -21,8 +21,12 @@ const AddMovies = (props) => {
     };
     Axios.post(ADD_MOVIE, movie, options)
       .then((responseData) => {
-        console.log(responseData);
-        props.addMovie(movie);
+        if (responseData.data.statusCode < 300) {
+          alert(responseData.data.message);
+          props.addMovie(movie);
+        } else {
+          alert(responseData.data.message);
+        }
       })
       .catch((err) => console.log(err));
   };
@@ -31,8 +35,6 @@ const AddMovies = (props) => {
       `http://www.omdbapi.com/?t=${data.title}&y=${data.year}&apikey=${API_KEY}`
     )
       .then((responseData) => {
-        console.log(responseData);
-
         setMovie(responseData.data);
       })
       .catch((err) => {

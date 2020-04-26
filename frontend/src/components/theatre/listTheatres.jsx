@@ -1,18 +1,18 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import Axios from "axios";
-import { LIST_MOVIE, options, DELETE_MOVIE } from "../../config/url";
+import { options, LIST_THEATRE, DELETE_THEATRE } from "../../config/url";
 
-const ListMovies = (props) => {
-  const [movies, setMovies] = useState([]);
+const ListTheatres = (props) => {
+  const [theatres, setTheatres] = useState([]);
   const [deleted, setDeleted] = useState(false);
   useEffect(() => {
-    Axios.get(LIST_MOVIE, options).then((responseData) => {
+    Axios.get(LIST_THEATRE, options).then((responseData) => {
       console.log(responseData);
       if (responseData.data.statusCode < 300) {
-        setMovies(responseData.data.data);
+        setTheatres(responseData.data.data);
       } else {
-        setMovies([]);
+        setTheatres([]);
       }
     });
     //     return () => {
@@ -20,8 +20,8 @@ const ListMovies = (props) => {
     //     };
   }, [props, deleted]);
 
-  const deleteMovie = (id) => {
-    Axios.delete(`${DELETE_MOVIE}/${id}`, options)
+  const deleteTheatre = (id) => {
+    Axios.delete(`${DELETE_THEATRE}/${id}`, options)
       .then((responseData) => {
         console.log(responseData.data.message);
         if (responseData.data.statusCode < 300) {
@@ -39,43 +39,31 @@ const ListMovies = (props) => {
 
   return (
     <React.Fragment>
-      {movies && movies.length > 0 ? (
+      {theatres && theatres.length > 0 ? (
         <table className="table mt-4">
-          <thead className="thead-light">
+          <thead className="thead-light listTheatreTable">
             <tr>
-              <th>Title</th>
-              <th>Year</th>
-              <th>Genre</th>
-              <th>Star Cast</th>
-              <th>Director</th>
-              <th>Language</th>
-              <th>Duration</th>
+              <th>Theatre Name</th>
+              <th>Location</th>
+              <th>City</th>
               <th>Action</th>
             </tr>
           </thead>
           <tbody>
-            {movies.map((movie) => {
+            {theatres.map((theatre) => {
               return (
-                <tr key={movie.ID}>
-                  <td>{movie.title}</td>
+                <tr key={theatre.ID}>
+                  <td>{theatre.theatrename}</td>
 
-                  <td>{movie.year}</td>
+                  <td>{theatre.location}</td>
 
-                  <td>{movie.genre}</td>
-
-                  <td>{movie.starcast}</td>
-
-                  <td>{movie.director}</td>
-
-                  <td>{movie.language}</td>
-
-                  <td>{movie.duration}</td>
+                  <td>{theatre.city}</td>
 
                   <td>
                     <button
                       className="btn btn-danger"
                       onClick={() => {
-                        deleteMovie(movie.ID);
+                        deleteTheatre(theatre.ID);
                       }}
                     >
                       <img
@@ -90,10 +78,10 @@ const ListMovies = (props) => {
           </tbody>
         </table>
       ) : (
-        <h4>No movies Found</h4>
+        <h4>No Theatre Found</h4>
       )}
     </React.Fragment>
   );
 };
 
-export default ListMovies;
+export default ListTheatres;
