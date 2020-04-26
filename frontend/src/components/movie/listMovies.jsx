@@ -1,16 +1,41 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Axios from "axios";
+import { LIST_MOVIE, options, DELETE_MOVIE } from "../../config/url";
 
 const ListMovies = (props) => {
   const [movies, setMovies] = useState([]);
-
+  const [deleted, setDeleted] = useState(false);
   useEffect(() => {
-    // Axios.get()
+    Axios.get(LIST_MOVIE, options).then((responseData) => {
+      console.log(responseData);
+      if (responseData.data.statusCode < 300) {
+        setMovies(responseData.data.data);
+      } else {
+        setMovies([]);
+      }
+    });
     //     return () => {
     //       cleanup;
     //     };
-  });
+  }, [props, deleted]);
+
+  const deleteMovie = (id) => {
+    Axios.delete(`${DELETE_MOVIE}/${id}`, options)
+      .then((responseData) => {
+        console.log(responseData.data.message);
+        if (responseData.data.statusCode < 300) {
+          alert(responseData.data.message);
+          setDeleted(!deleted);
+        } else {
+          alert(responseData.data.message);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    console.log(id);
+  };
 
   return (
     <React.Fragment>
@@ -29,25 +54,39 @@ const ListMovies = (props) => {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>{movie.Title}</td>
+            {movies.map((movie) => {
+              return (
+                <tr key={movie.ID}>
+                  <td>{movie.title}</td>
 
-              <td>{movie.Year}</td>
+                  <td>{movie.year}</td>
 
-              <td>{movie.Genre}</td>
+                  <td>{movie.genre}</td>
 
-              <td>{movie.Actors}</td>
+                  <td>{movie.starcast}</td>
 
-              <td>{movie.Director}</td>
+                  <td>{movie.director}</td>
 
-              <td>{movie.Language}</td>
+                  <td>{movie.language}</td>
 
-              <td>{movie.Runtime}</td>
+                  <td>{movie.duration}</td>
 
-              <td>
-                <button className="btn btn-primary">+</button>
-              </td>
-            </tr>
+                  <td>
+                    <button
+                      className="btn btn-primary"
+                      onClick={() => {
+                        deleteMovie(movie.ID);
+                      }}
+                    >
+                      <img
+                        src="https://cdn2.iconfinder.com/data/icons/apple-inspire-white/100/Apple-64-512.png"
+                        width="15"
+                      />
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       ) : (
@@ -56,3 +95,5 @@ const ListMovies = (props) => {
     </React.Fragment>
   );
 };
+
+export default ListMovies;

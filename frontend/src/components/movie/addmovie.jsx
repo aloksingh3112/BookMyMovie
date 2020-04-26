@@ -22,9 +22,9 @@ const AddMovies = (props) => {
     Axios.post(ADD_MOVIE, movie, options)
       .then((responseData) => {
         console.log(responseData);
+        props.addMovie(movie);
       })
       .catch((err) => console.log(err));
-    props.addMovie(movie);
   };
   const searchMovie = (data, e) => {
     Axios.get(
@@ -65,10 +65,10 @@ const AddMovies = (props) => {
           Search Movie
         </button>
       </form>
-      {movie && movie.Response == "False" && (
+      {movie && movie.Response === "False" && (
         <h4 className="mt-3">{movie.Error}</h4>
       )}
-      {movie && movie.Response == "True" && (
+      {movie && movie.Response === "True" && (
         <table className="table mt-4">
           <thead className="thead-light">
             <tr>
