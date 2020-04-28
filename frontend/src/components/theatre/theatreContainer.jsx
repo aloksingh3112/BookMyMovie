@@ -2,6 +2,7 @@ import React from "react";
 import { Switch, Route, Link, NavLink } from "react-router-dom";
 import ListTheatres from "./listTheatres";
 import AddTheatres from "./addTheatres";
+import MapTheatre from "./mapTheatre";
 
 const TheatreContainer = () => {
   return (
@@ -24,14 +25,21 @@ const TheatreContainer = () => {
           List Theatre
         </NavLink>
 
-        <a href="#clients">Clients</a>
-        <a href="#contact">Contact</a>
+        <NavLink
+          activeStyle={{
+            color: "white",
+          }}
+          to="/addTheatre/map"
+        >
+          Map Theatre
+        </NavLink>
       </div>
 
       <div className="main">
         <Switch>
           <Route path="/addTheatre/add" component={AddTheatres}></Route>
           <Route path="/addTheatre/list" component={ListTheatres}></Route>
+          <Route path="/addTheatre/map" component={MapTheatre}></Route>
         </Switch>
       </div>
     </React.Fragment>
