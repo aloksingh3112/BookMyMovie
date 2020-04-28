@@ -16,3 +16,5 @@ export const DELETE_MOVIE = `${BASE_URL}/movie/deleteMovie`;
 export const ADD_THEATRE = `${BASE_URL}/theatre/addTheatre`;
 export const LIST_THEATRE = `${BASE_URL}/theatre/getTheatres`;
 export const DELETE_THEATRE = `${BASE_URL}/theatre/deleteTheatre`;
+
+export const MAP_MOVIE_THEATRE = `${BASE_URL}/map/movieTheatre`;

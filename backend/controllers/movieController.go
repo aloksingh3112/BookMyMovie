@@ -133,7 +133,7 @@ func MapMovieWithTheatre(c *gin.Context) {
 	db.Model(&models.TheatreTime{}).AddForeignKey("theatre_id", "theatres(id)", "CASCADE", "CASCADE")
 	db.Model(&models.Seat{}).AddForeignKey("time_id", "times(id)", "CASCADE", "CASCADE")
 	db.Where("id=?", movieDateInput.MovieID).First(&movie)
-
+	fmt.Println(movieDateInput.MovieID, movie)
 	for _, date := range movieDateInput.Dates {
 		var t models.Date
 		err := db.Where("date=?", date).First(&t).Error
@@ -194,7 +194,7 @@ func MapMovieWithTheatre(c *gin.Context) {
 	}
 
 	// var dt models.Date
-	c.JSON(http.StatusOK, gin.H{"data": movie})
+	c.JSON(http.StatusOK, gin.H{"data": nil, "message": "Map theatre with Movie Successfully", "statusCode": 200})
 
 }
 
