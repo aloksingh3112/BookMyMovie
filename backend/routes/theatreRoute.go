@@ -11,7 +11,7 @@ func TheatreRoute(r *gin.Engine) {
 	theatre := r.Group("/theatre")
 	{
 		theatre.POST("/addTheatre", middleware.VerifyToken, middleware.VerifyUser, controller.CreateTheatre)
-		theatre.GET("/getTheatres", middleware.VerifyToken, middleware.VerifyUser, controller.GetTheatres)
+		theatre.GET("/getTheatres", controller.GetTheatres)
 		theatre.PUT("/updateTheatre/:id", middleware.VerifyToken, middleware.VerifyUser, controller.UpdateTheatre)
 		theatre.DELETE("/deleteTheatre/:id", middleware.VerifyToken, middleware.VerifyUser, controller.DeleteTheatre)
 

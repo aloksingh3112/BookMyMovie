@@ -48,21 +48,38 @@ func AddMovie(c *gin.Context) {
 
 }
 
+// func GetMovies(c *gin.Context) {
+// 	db := c.MustGet("db").(*gorm.DB)
+// 	inputUser := utils.DecodeToken(c)
+// 	var user models.User
+// 	err := db.Where("username =?", inputUser.Username).Preload("Movie").First(&user).Error
+// 	if err != nil {
+// 		c.JSON(http.StatusOK, gin.H{"data": err, "message": "Something went wrong", "statusCode": 500})
+// 		return
+// 	}
+// 	if len(user.Movie) == 0 {
+// 		c.JSON(http.StatusOK, gin.H{"data": user.Movie, "message": "No Data Found", "statusCode": 200})
+// 		return
+// 	}
+
+// 	c.JSON(http.StatusOK, gin.H{"data": user.Movie, "message": "Fetch Data Successfully", "statusCode": 200})
+
+// }
+
 func GetMovies(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
-	inputUser := utils.DecodeToken(c)
-	var user models.User
-	err := db.Where("username =?", inputUser.Username).Preload("Movie").First(&user).Error
+	var movie []models.Movie
+	err := db.Find(&movie).Error
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{"data": err, "message": "Something went wrong", "statusCode": 500})
 		return
 	}
-	if len(user.Movie) == 0 {
-		c.JSON(http.StatusOK, gin.H{"data": user.Movie, "message": "No Data Found", "statusCode": 200})
+	if len(movie) == 0 {
+		c.JSON(http.StatusOK, gin.H{"data": movie, "message": "No Data Found", "statusCode": 200})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": user.Movie, "message": "Fetch Data Successfully", "statusCode": 200})
+	c.JSON(http.StatusOK, gin.H{"data": movie, "message": "Fetch Data Successfully", "statusCode": 200})
 
 }
 

@@ -37,21 +37,39 @@ func CreateTheatre(c *gin.Context) {
 	//fmt.Println(user)
 }
 
+// func GetTheatres(c *gin.Context) {
+// 	db := c.MustGet("db").(*gorm.DB)
+// 	inputUser := utils.DecodeToken(c)
+// 	var user models.User
+// 	err := db.Where("username =?", inputUser.Username).Preload("Theatre").First(&user).Error
+// 	if err != nil {
+// 		c.JSON(http.StatusOK, gin.H{"data": err, "message": "Something went wrong", "statusCode": 500})
+// 		return
+// 	}
+// 	if len(user.Movie) == 0 {
+// 		c.JSON(http.StatusOK, gin.H{"data": user.Theatre, "message": "No Data Found", "statusCode": 200})
+// 		return
+// 	}
+
+// 	c.JSON(http.StatusOK, gin.H{"data": user.Theatre, "message": "Fetch Data Successfully", "statusCode": 200})
+
+// }
+
 func GetTheatres(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
-	inputUser := utils.DecodeToken(c)
-	var user models.User
-	err := db.Where("username =?", inputUser.Username).Preload("Theatre").First(&user).Error
+	//inputUser := utils.DecodeToken(c)
+	var theatre []models.Theatre
+	err := db.Find(&theatre).Error
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{"data": err, "message": "Something went wrong", "statusCode": 500})
 		return
 	}
-	if len(user.Movie) == 0 {
-		c.JSON(http.StatusOK, gin.H{"data": user.Theatre, "message": "No Data Found", "statusCode": 200})
+	if len(theatre) == 0 {
+		c.JSON(http.StatusOK, gin.H{"data": theatre, "message": "No Data Found", "statusCode": 200})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": user.Theatre, "message": "Fetch Data Successfully", "statusCode": 200})
+	c.JSON(http.StatusOK, gin.H{"data": theatre, "message": "Fetch Data Successfully", "statusCode": 200})
 
 }
 

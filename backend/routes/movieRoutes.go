@@ -11,7 +11,7 @@ func MovieRoutes(router *gin.Engine) {
 	movie := router.Group("/movie")
 	{
 		movie.POST("/addMovie", middleware.VerifyToken, middleware.VerifyUser, controller.AddMovie)
-		movie.GET("/getMovies", middleware.VerifyToken, middleware.VerifyUser, controller.GetMovies)
+		movie.GET("/getMovies", controller.GetMovies)
 		movie.PUT("/updateMovie/:id", middleware.VerifyToken, middleware.VerifyUser, controller.UpdateMovies)
 		movie.DELETE("/deleteMovie/:id", middleware.VerifyToken, middleware.VerifyUser, controller.DeleteMovie)
 	}
