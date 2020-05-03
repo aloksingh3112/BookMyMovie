@@ -119,3 +119,76 @@ func DeleteTheatre(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": theatre, "message": "Data deleted successfully", "statusCode": 200})
 
 }
+
+type MoviesDateMap struct {
+	Date    models.Date
+	Theatre []DateTheatreMap
+}
+
+type DateTheatreMap struct {
+	Theatre models.Theatre
+	Time    []models.Time
+}
+
+func GetTheatreMovieMap(c *gin.Context) {
+	db := c.MustGet("db").(*gorm.DB)
+	var movieDate models.Movie
+	var movieTheatre models.Movie
+	var movieTime models.Movie
+
+	//var theatreData []models.Theatre
+	var dateTheatreMap []DateTheatreMap
+	var movieDateMap []MoviesDateMap
+
+	// var DateTheatre models.DateTheatre
+	// var TheatreTime models.TheatreTime
+
+	// var MovieDateMap []MoviesDateMap
+	// var theatreData []models.Theatre
+
+	db.Where("id=?", c.Param("id")).Preload("Dates").First(&movieDate)
+	db.Where("id=?", c.Param("id")).Preload("Theatres").First(&movieTheatre)
+	db.Where("id=?", c.Param("id")).Preload("Times").First(&movieTime)
+
+	for _, t := range movieTheatre.Theatres {
+		var theatre models.Theatre
+		db.Where("id=?", t.ID).Preload("Time").First(&theatre)
+		var times []models.Time
+		for _, t := range theatre.Time {
+			for _, tt := range movieTime.Times {
+				if t.ID == tt.ID {
+					times = append(times, t)
+				}
+			}
+		}
+		data := DateTheatreMap{
+			Theatre: t,
+			Time:    times,
+		}
+		dateTheatreMap = append(dateTheatreMap, data)
+
+	}
+
+	for _, d := range movieDate.Dates {
+		var date models.Date
+		db.Where("id=?", d.ID).Preload("Theatre").First(&date)
+		var dtm []DateTheatreMap
+		for _, t := range date.Theatre {
+			for _, tt := range dateTheatreMap {
+				if t.ID == tt.Theatre.ID {
+					dtm = append(dtm, tt)
+				}
+			}
+		}
+		data := MoviesDateMap{
+			Date:    d,
+			Theatre: dtm,
+		}
+		movieDateMap = append(movieDateMap, data)
+
+	}
+
+	//fmt.Println(movieData)
+	c.JSON(http.StatusOK, gin.H{"data": movieDateMap})
+
+}

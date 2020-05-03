@@ -148,6 +148,11 @@ func MapMovieWithTheatre(c *gin.Context) {
 	db.Model(&models.DateTheatre{}).AddForeignKey("theatre_id", "theatres(id)", "CASCADE", "CASCADE")
 	db.Model(&models.TheatreTime{}).AddForeignKey("time_id", "times(id)", "CASCADE", "CASCADE")
 	db.Model(&models.TheatreTime{}).AddForeignKey("theatre_id", "theatres(id)", "CASCADE", "CASCADE")
+	db.Model(&models.MovieTheatre{}).AddForeignKey("movie_id", "movies(id)", "CASCADE", "CASCADE ")
+	db.Model(&models.MovieTheatre{}).AddForeignKey("theatre_id", "theatres(id)", "CASCADE", "CASCADE ")
+	db.Model(&models.MovieTime{}).AddForeignKey("movie_id", "movies(id)", "CASCADE", "CASCADE ")
+	db.Model(&models.MovieTime{}).AddForeignKey("time_id", "times(id)", "CASCADE", "CASCADE ")
+
 	db.Model(&models.Seat{}).AddForeignKey("time_id", "times(id)", "CASCADE", "CASCADE")
 	db.Where("id=?", movieDateInput.MovieID).First(&movie)
 	fmt.Println(movieDateInput.MovieID, movie)
@@ -170,6 +175,16 @@ func MapMovieWithTheatre(c *gin.Context) {
 	db.Model(&movie).Association("Dates").Append(&dateData)
 	db.Save(&movie)
 	db.Model(&movie).Preload("Dates").First(&movie)
+
+	var TheatreData []models.Theatre
+	for _, id := range movieDateInput.TheatreID {
+		var t models.Theatre
+		db.Where("id=?", id).First(&t)
+		TheatreData = append(TheatreData, t)
+
+	}
+	db.Model(&movie).Association("Theatres").Append(&TheatreData)
+	db.Save(&movie)
 
 	for _, date := range movieDateInput.Dates {
 		var TheatreData []models.Theatre
@@ -207,8 +222,17 @@ func MapMovieWithTheatre(c *gin.Context) {
 		}
 		db.Model(&dt).Association("Time").Append(&times)
 		db.Save(&dt)
+	}
+
+	var timesData []models.Time
+	for _, id := range movieDateInput.Times {
+		var t models.Time
+		db.Where("time=?", id).First(&t)
+		timesData = append(timesData, t)
 
 	}
+	db.Model(&movie).Association("Times").Append(&timesData)
+	db.Save(&movie)
 
 	// var dt models.Date
 	c.JSON(http.StatusOK, gin.H{"data": nil, "message": "Map theatre with Movie Successfully", "statusCode": 200})

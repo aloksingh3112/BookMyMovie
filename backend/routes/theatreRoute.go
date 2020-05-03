@@ -16,5 +16,9 @@ func TheatreRoute(r *gin.Engine) {
 		theatre.DELETE("/deleteTheatre/:id", middleware.VerifyToken, middleware.VerifyUser, controller.DeleteTheatre)
 
 	}
+	theatreMap := r.Group("/map")
+	{
+		theatreMap.GET("/mapDate/:id", controller.GetTheatreMovieMap)
+	}
 
 }
