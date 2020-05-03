@@ -189,6 +189,10 @@ func GetTheatreMovieMap(c *gin.Context) {
 	}
 
 	//fmt.Println(movieData)
-	c.JSON(http.StatusOK, gin.H{"data": movieDateMap})
+	if movieDateMap == nil {
+		c.JSON(http.StatusOK, gin.H{"data": nil, "message": "No data found", "statusCode": 404})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": movieDateMap, "message": "data found successfully", "statusCode": 200})
 
 }

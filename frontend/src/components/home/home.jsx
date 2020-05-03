@@ -12,6 +12,10 @@ const Home = (props) => {
       })
       .catch((err) => console.log(err));
   }, [props]);
+
+  // const handleTheatreDate = (id) => {
+  //   props.history.push(`/theatreDate/${id}`);
+  // };
   return (
     <React.Fragment>
       <div className="d-flex flex-wrap">
@@ -41,7 +45,10 @@ const Home = (props) => {
                   </div>
                 </div>
                 <div className="card-footer">
-                  <a href="#" className="btn btn-danger">
+                  <a
+                    className="btn btn-danger"
+                    onClick={() => props.history.push(`/theatreDate/${m.ID}`)}
+                  >
                     Book Now
                   </a>
                 </div>

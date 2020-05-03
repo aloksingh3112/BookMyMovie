@@ -19,7 +19,10 @@ const Router = () => {
         path="/theatreDate/:id"
         component={TheatreDate}
       ></ProtectedRoute>
-      <ProtectedRoute path="/seat" component={SeatContainer}></ProtectedRoute>
+      <ProtectedRoute
+        path="/seat/:movieId/:dateId/:theatreId/:timeId"
+        component={SeatContainer}
+      ></ProtectedRoute>
       <ProtectedRoute path="/booked" component={Confirmation}></ProtectedRoute>
       <Route path="/login" component={Login}></Route>
       {/* <Route path="/signup" component={Signup}></Route> */}
