@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Axios from "axios";
 import { GET_SEAT_DATA, options } from "../../config/url";
+import StripeCheckOut from "./stripe";
 const seatsData = [
   { seatnumber: "A1", price: 500, disabled: false },
   { seatnumber: "A2", price: 500, disabled: false },
@@ -150,9 +151,7 @@ const SeatContainer = (props) => {
               </div>
               <hr />
 
-              <a href="#" className="btn btn-success ">
-                Procees To Payment
-              </a>
+              <StripeCheckOut amount={amount + 20} />
             </div>
           </div>
         </div>
