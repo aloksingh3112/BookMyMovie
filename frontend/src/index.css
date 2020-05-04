@@ -60,10 +60,10 @@ p::before {
   font-size: small !important;
 }
 .seat-selection {
-  font-size: small !important;
+  font-size: x-small !important;
 }
 .screen {
-  width: 82%;
+  width: 43%;
   height: 20px;
   background: #4388cc;
   color: #fff;
@@ -97,6 +97,8 @@ p::before {
 .seats {
   border: 1px solid red;
   background: yellow;
+  margin-right: 5rem !important;
+  margin-top: 2rem !important;
 }
 
 .seatGap {

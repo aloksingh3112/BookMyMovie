@@ -19,3 +19,4 @@ export const DELETE_THEATRE = `${BASE_URL}/theatre/deleteTheatre`;
 
 export const MAP_MOVIE_THEATRE = `${BASE_URL}/map/movieTheatre`;
 export const MAP_DATE_THEATRE = `${BASE_URL}/map/mapDate`;
+export const GET_SEAT_DATA = `${BASE_URL}/map/seatMap`;

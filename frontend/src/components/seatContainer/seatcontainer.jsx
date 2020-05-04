@@ -1,47 +1,170 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import Axios from "axios";
+import { GET_SEAT_DATA, options } from "../../config/url";
+const seatsData = [
+  { seatnumber: "A1", price: 500, disabled: false },
+  { seatnumber: "A2", price: 500, disabled: false },
+  { seatnumber: "A3", price: 500, disabled: false },
+  { seatnumber: "A4", price: 500, disabled: false },
+  { seatnumber: "A5", price: 500, disabled: false },
+  { seatnumber: "A6", price: 500, disabled: false },
+  { seatnumber: "A7", price: 500, disabled: false },
+  { seatnumber: "A8", price: 500, disabled: false },
+  { seatnumber: "A9", price: 500, disabled: false },
+  { seatnumber: "A10", price: 500, disabled: false },
+  { seatnumber: "A11", price: 500, disabled: false },
+  { seatnumber: "B1", price: 500, disabled: false },
+  { seatnumber: "B2", price: 500, disabled: false },
+  { seatnumber: "B3", price: 500, disabled: false },
+  { seatnumber: "B4", price: 500, disabled: false },
+  { seatnumber: "B5", price: 500, disabled: false },
+  { seatnumber: "B6", price: 500, disabled: false },
+  { seatnumber: "B7", price: 500, disabled: false },
+  { seatnumber: "B8", price: 500, disabled: false },
+  { seatnumber: "B9", price: 500, disabled: false },
+  { seatnumber: "B10", price: 500, disabled: false },
+  { seatnumber: "B11", price: 500, disabled: false },
+];
 
-const SeatContainer = () => {
+const SeatContainer = (props) => {
+  const [seatsResponse, setSeatsResponse] = useState([]);
+  const [seats, setSeats] = useState(seatsData);
+  const [noofSeats, setNumberOfSeats] = useState(0);
+  const [seatSelected, setSeatSelected] = useState([]);
+
+  const [seatsNumber, seatNumber] = useState();
+  const [amount, setAmount] = useState(0);
+
+  useEffect(() => {
+    const { movieId, dateId, theatreId, timeId } = props.match.params;
+    console.log(movieId, dateId, theatreId, timeId);
+    const data = {
+      movieId,
+      dateId,
+      theatreId,
+      timeId,
+    };
+    console.log(data);
+    Axios.post(GET_SEAT_DATA, data, options).then((responseData) => {
+      console.log(responseData);
+    });
+  }, [props]);
+
+  const handleChange = (e) => {
+    console.log(e.target.checked);
+    const index = seats.findIndex((s) => s.seatnumber == e.target.value);
+    const data = seats[index];
+    if (e.target.checked) {
+      setSeatSelected([...seatSelected, data]);
+      var count = noofSeats;
+
+      count = count + 1;
+      setNumberOfSeats(count);
+      var price = amount + data.price;
+      setAmount(price);
+    } else {
+      var s = [...seatSelected];
+      const index = s.findIndex((s) => s.seatnumber == e.target.value);
+      s.splice(index, 1);
+      setSeatSelected(s);
+      var count = noofSeats;
+      count = count - 1;
+      setNumberOfSeats(count);
+      var price = amount - data.price;
+      setAmount(price);
+    }
+  };
   return (
-    <h1>
+    <React.Fragment>
       <div className="screen">SCREEN</div>
       <div className="row mt-4">
-        <div className="col-md-10">
-          <center>
-            <table className="table table-borderless seat-table">
-              <thead>
-                <tr>
-                  <th>1</th>
-                  <th>2</th>
-                  <th>3</th>
-                  <th>4</th>
-                  <th>5</th>
-                  <th>6</th>
-                  <th></th>
-                  <th></th>
-                  <th>7</th>
-                  <th>8</th>
-                  <th>9</th>
-                  <th>10</th>
-                  <th>11</th>
-                  <th>12</th>
-                </tr>
-              </thead>
-              <tbody></tbody>
-            </table>
-          </center>
+        <div className="col-md-8">
+          <div className="row">
+            <div className="col-md-9 ">
+              <div className="d-flex flex-wrap ml-4">
+                {seats &&
+                  seats.map((s) => {
+                    return (
+                      <input
+                        type="checkbox"
+                        className="seats"
+                        value={s.seatnumber}
+                        disabled={s.disabled}
+                        onChange={handleChange}
+                      />
+                    );
+                  })}
+              </div>
+            </div>
+            <div className="col-md-3 seat-selection ">
+              <div className="smallBox greenBox">Selected Seat</div>
+              <div className="smallBox emptyBox">Empty Seat</div>
+            </div>
+          </div>
         </div>
-        <div className="col-md-2 seat-selection ">
-          <div className="smallBox greenBox">Selected Seat</div>
-          <div className="smallBox emptyBox">Empty Seat</div>
+
+        <div className="col-md-4">
+          <div className="card" style={{ width: 350 }}>
+            <div className="card-body">
+              <h3 className="card-title">Booking Summary</h3>
+              <hr />
+              <div className="row">
+                <div className="col-md-8">No. of seat selected</div>
+                <div className="col-md-2 text-nowrap">{noofSeats}</div>
+              </div>
+              <hr />
+
+              <div className="row">
+                <div className="col-md-8">Seat No</div>
+                <div className="col-md-4 ">
+                  {seatSelected &&
+                    seatSelected.length > 0 &&
+                    seatSelected.map((s, i) => {
+                      return (
+                        <span>
+                          {s.seatnumber}
+                          {i != seatSelected.length - 1 && ","}
+                        </span>
+                      );
+                    })}
+                </div>
+              </div>
+              <hr />
+
+              <div className="row">
+                <div className="col-md-8">Sub Total</div>
+                <div className="col-md-4 text-nowrap">{amount}</div>
+              </div>
+              <hr />
+              <div className="row">
+                <div className="col-md-8">Internet handling fees</div>
+                <div className="col-md-4">20</div>
+              </div>
+              <hr />
+
+              <div className="row">
+                <div className="col-md-8">Amount payable</div>
+                <div className="col-md-4 text-nowrap">
+                  {amount == 0 ? 0 : amount + 20}
+                </div>
+              </div>
+              <hr />
+
+              <a href="#" className="btn btn-success ">
+                Procees To Payment
+              </a>
+            </div>
+          </div>
         </div>
       </div>
-    </h1>
+    </React.Fragment>
   );
 };
 
 export default SeatContainer;
 
-// {/* <React.Fragment>
+{
+  /* // <React.Fragment>
 //       <div class="seatStructure">
 //         <center>
 //           <table id="seatsBlock">
@@ -53,9 +176,11 @@ export default SeatContainer;
 //                 <div class="smallBox greenBox">Selected Seat</div> <br />
 //                 <div class="smallBox emptyBox">Empty Seat</div>
 //                 <br />
-//               </td> */}
+//               </td> */
+}
 
-//               <br />
+{
+  /* //               <br />
 //             </tr>
 
 //             <tr>
@@ -117,5 +242,6 @@ export default SeatContainer;
 //             </tr>
 //           </table>
 //         </center>
-//       </div>
+//       </div> */
+}
 //     </React.Fragment> */}
