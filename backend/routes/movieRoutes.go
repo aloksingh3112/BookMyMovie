@@ -12,6 +12,7 @@ func MovieRoutes(router *gin.Engine) {
 	{
 		movie.POST("/addMovie", middleware.VerifyToken, middleware.VerifyUser, controller.AddMovie)
 		movie.GET("/getMovies", controller.GetMovies)
+		movie.GET("/getMovies/:id", controller.GetMovie)
 		movie.PUT("/updateMovie/:id", middleware.VerifyToken, middleware.VerifyUser, controller.UpdateMovies)
 		movie.DELETE("/deleteMovie/:id", middleware.VerifyToken, middleware.VerifyUser, controller.DeleteMovie)
 	}

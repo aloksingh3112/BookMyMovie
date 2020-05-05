@@ -27,6 +27,9 @@ func main() {
 	routes.TheatreRoute(router)
 	routes.BookingRoute(router)
 	routes.AuthRoute(router)
+	routes.DateRoute(router)
+	routes.TimeRoute(router)
+
 	router.Run()
 }
 

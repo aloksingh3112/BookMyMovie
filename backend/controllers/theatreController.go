@@ -73,6 +73,20 @@ func GetTheatres(c *gin.Context) {
 
 }
 
+func GetTheatre(c *gin.Context) {
+	db := c.MustGet("db").(*gorm.DB)
+	//inputUser := utils.DecodeToken(c)
+	var theatre models.Theatre
+	err := db.Where("id=?", c.Param("id")).First(&theatre).Error
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{"data": err, "message": "Something went wrong", "statusCode": 500})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": theatre, "message": "Fetch Data Successfully", "statusCode": 200})
+
+}
+
 func UpdateTheatre(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
 	var inputTheatre types.Theatre

@@ -83,6 +83,19 @@ func GetMovies(c *gin.Context) {
 
 }
 
+func GetMovie(c *gin.Context) {
+	db := c.MustGet("db").(*gorm.DB)
+	var movie models.Movie
+	err := db.Where("id=?", c.Param("id")).First(&movie).Error
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{"data": err, "message": "Something went wrong", "statusCode": 500})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": movie, "message": "Fetch Data Successfully", "statusCode": 200})
+
+}
+
 func UpdateMovies(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
 	var inputMovie types.Movie

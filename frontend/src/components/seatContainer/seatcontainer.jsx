@@ -151,7 +151,14 @@ const SeatContainer = (props) => {
               </div>
               <hr />
 
-              <StripeCheckOut amount={amount + 20} />
+              <StripeCheckOut
+                amount={amount + 20}
+                movieId={props.match.params.movieId}
+                dateId={props.match.params.movieId}
+                theatreId={props.match.params.movieId}
+                timeId={props.match.params.movieId}
+                seats={seatSelected}
+              />
             </div>
           </div>
         </div>

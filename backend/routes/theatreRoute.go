@@ -12,6 +12,7 @@ func TheatreRoute(r *gin.Engine) {
 	{
 		theatre.POST("/addTheatre", middleware.VerifyToken, middleware.VerifyUser, controller.CreateTheatre)
 		theatre.GET("/getTheatres", controller.GetTheatres)
+		theatre.GET("/getTheatre/:id", controller.GetTheatre)
 		theatre.PUT("/updateTheatre/:id", middleware.VerifyToken, middleware.VerifyUser, controller.UpdateTheatre)
 		theatre.DELETE("/deleteTheatre/:id", middleware.VerifyToken, middleware.VerifyUser, controller.DeleteTheatre)
 
